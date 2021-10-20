@@ -7,7 +7,7 @@ export default class App extends Component {
     return (
       <div>
         <CountContainer/>
-        <hr/>
+        <hr />
         <Person/>
       </div>
     )

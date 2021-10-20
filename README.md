@@ -11,7 +11,23 @@
 ​	![](\原理图\redux原理图.png)
 
 
-### 四、异步action
+* 需要的文件：
+  components
+  redux
+    |- action.js
+    |- reducer.js
+    |- store.js
+
+* 注意：index.js中要使用store.subscribe来检测redux中状态的改变
+```js
+store.subscribe(()=>{
+  ReactDOM.render(
+  <App/>,document.getElementById('root'))
+})
+```
+###  二、 求和案例 redux迷你版
+###  三、 求和案例 redux完整版
+###  四、异步action
 引入 applyMiddleware
 引入 thunk
 * 在store.js中：
@@ -70,3 +86,104 @@ export const creatIncrementAsyncAction = (value,time) => {
     }
   }
   ```
+
+  ![](./原理图/react-redux模型图.png)
+
+### 六、优化
+#### 1. 容器优化
+mapDispatchToProps也可简单地定义为对象，此时react-redux会自动dispatch其中value为action的内容，如遇addasync这种返回一个函数的，走异步action流程。
+```js
+const mapStateToProps = state => ({sum:state}) // 映射状态
+
+const mapDispatchToProps = {
+  add: creatIncrementAction,
+  subtract: creatDecrementAction,
+  addasync: creatIncrementAsyncAction
+} // 映射操作状态的方法
+
+export default connect(mapStateToProps,mapDispatchToProps)(CountUI)
+```
+
+#### 2.Provider
+有了Provier, App.jsx中靠props给容器组件Count传进去的store可以删去，也免去了未来有多个容器组件需要store的麻烦。直接在index.js中，为App组件包一个Provider。
+* Provider同时有store.subscribe的功能,因此subscribe也可删去。
+
+```js
+import React from "react"
+import ReactDOM from "react-dom"
+import App from "./App"
+import store from "./redux/store"
+import {Provider} from 'react-redux'
+
+ReactDOM.render(
+  <Provider store={store}>
+    <App/>
+  </Provider>
+  ,document.getElementById('root'))
+
+```
+
+#### 3.一个组件要和redux“打交道”要经过哪几步？
+1. 定义好UI组件——不暴露
+2. 引入connect生产一个容器组件，并暴露，写法如下：
+  ```js
+  connect(
+    state => ({key:value}), // 映射状态
+    {key:xxxxxAction} // 映射操作状态的方法
+  )(UI组件)
+  ```
+3. 在UI组件中通过this.props.xxxxx读取和操作状态
+
+#### 4.容器组件和UI组件合二为一！
+
+
+### 七、数据共享版，reducer合并
+在store中对多个组件的reducer进行合并：
+```js
+import countReducer from './reducers/count'
+import personReducer from './reducers/person'
+import { combineReducers } from 'redux'
+
+const allReducer = combineReducers({
+  sumUp: countReducer,      // 左边的key代表该reducer下处理并保存的state
+  personInfo: personReducer
+})
+
+export default createStore (allReducer,applyMiddleware(thunk))
+```
+
+### 八、开发者工具Redux DevTools Extension
+通过chrome store下载，并npm：
+npm install --save redux-devtools-extension
+
+store.js引入并使用：
+```js
+import { createStore, applyMiddleware } from 'redux';
+import { composeWithDevTools } from 'redux-devtools-extension';
+
+const store = createStore(reducer, composeWithDevTools(
+  applyMiddleware(...middleware),
+  // other store enhancers if any
+));
+```
+
+### 九、纯函数和高阶函数
+#### 1. 纯函数
+1. 一类特别的函数：只要同样的输入（实参），必定得到同样的输出（返回）
+2. 必须遵守以下一些约束
+  - 不得改写参数数据
+  - 不会产生任何副作用，例如网络请求、输入和输出设备
+  - 不能调用Date.now()或者Math.random() 等不纯的方法
+3. redux的reducer函数必须是一个纯函数：
+  ！！！ 一定不要使用push\unshift等改变原数据的API
+
+#### 2. 高阶函数
+1. 理解：一类特别的函数
+  - 情况1：参数是函数
+  - 情况2：返回的是函数
+2. 常见的高阶函数
+  - 1. 定时器设置函数
+  - 2. 数组的forEach() map() filter() reduce() find() bind()
+  - 3. promise
+  - 4. react-redux中的connect函数
+3. 作用： 能实现更加动态，更加可扩展的功能

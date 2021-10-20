@@ -1,6 +1,8 @@
 import React, {Component} from 'react'
 import {connect} from 'react-redux'
-import { add,subtract,addasync } from '../../redux/actions/count'
+import { creatIncrementAction,
+  creatDecrementAction,
+  creatIncrementAsyncAction } from '../../redux/count_action'
 import './index.css'
 
 class Count extends Component {
@@ -30,11 +32,9 @@ class Count extends Component {
   
     render() {
       return (
-        <div className='Count'>
+        <div>
           <h2>当前求和为：{this.props.sum}</h2>
-          <div className="wind">
-            我是Count组件，今天{this.state.wind},下面共有{this.props.personInfo.length}人
-            </div>
+          <div className="wind">今天{this.state.wind}</div>
           <select ref={c => this.numberNode = c}>
             <option value="1">1</option>
             <option value="2">2</option>
@@ -49,7 +49,13 @@ class Count extends Component {
     }
   }
 
-export default connect(
-  state => ({sum:state.sumUp,personInfo:state.personInfo}),
-  {add,subtract,addasync}
-  )(Count)
+
+const mapStateToProps = state => ({sum:state}) // 映射状态
+
+const mapDispatchToProps = {
+  add: creatIncrementAction,
+  subtract: creatDecrementAction,
+  addasync: creatIncrementAsyncAction
+} // 映射操作状态的方法
+
+export default connect(mapStateToProps,mapDispatchToProps)(Count)
