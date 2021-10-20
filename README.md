@@ -1,70 +1,67 @@
-# Getting Started with Create React App
+## redux
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+###  一、 redux简介
+#### 1.redux是什么？
+  1. redux是一个专门用于做**状态管理**的JS库（不是react插件库）
+  2. 基本与react配合使用
+  3. 作用：集中式管理react应用中多个组件**共享的state状态**
 
-## Available Scripts
+#### 2.工作流程
 
-In the project directory, you can run:
+​	![](C:\Users\victo\Desktop\source\React\4-学习Redux\原理图\redux原理图.png)
 
-### `npm start`
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+### 四、异步action
+引入 applyMiddleware
+引入 thunk
+* 在store.js中：
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+```js
+import { createStore, applyMiddleware } from 'redux'
+import countReducer from './count_reducer'
+import thunk from 'redux-thunk' // 引入用于支持异步action的中间件
 
-### `npm test`
+const store = createStore (countReducer,applyMiddleware(thunk))
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+export default store
+```
 
-### `npm run build`
+* 异步action函数的返回值是一个函数，而不是{type,action}对象，因此store会自动识别出来。同时无需引入store，可直接在返回值函数中使用dispatch。
+```js
+export const creatIncrementAsyncAction = (value,time) => {
+  return (dispatch)=>{ 
+    setTimeout(() => {
+      dispatch(creatIncrementAction(value))
+    }, time);
+  }
+}
+```
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+### 五、 react-redux的基本使用
+（1） 明确两个概念：
+  - 1）UI 组件： 不能使用任何redux的API，只负责页面的呈现、交互等
+  - 1）容器组件：负责和redux通信，结果交给UI组件
+（2）如何创建一个容器组件：靠react-redux的 connect函数
+  - 引入：
+    ```js
+    import {connect} from 'react-redux'
+    ```
+  - 写法：
+    ```js
+    connect(mapStateToProps, mapDispatchToProps)(UI组件)
+    ```
+    - mapStateToProps 映射状态，返回值需要是一个对象
+    - mapDispatchToProps 映射操作状态的方法，返回值需是一个对象
+（3）备注：容器组件中的store是在App.jsx中靠props传进去的，不是在容器组件中直接引入
+  ```js
+  import store from './redux/store'
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+  export default class App extends Component {
+    render() {
+      return (
+        <CountContainer store={store}/>
+      )
+    }
+  }
+  ```
