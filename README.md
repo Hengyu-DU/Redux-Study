@@ -41,18 +41,23 @@ export const creatIncrementAsyncAction = (value,time) => {
 ### 五、 react-redux的基本使用
 （1） 明确两个概念：
   - 1）UI 组件： 不能使用任何redux的API，只负责页面的呈现、交互等
+
   - 1）容器组件：负责和redux通信，结果交给UI组件
+
 （2）如何创建一个容器组件：靠react-redux的 connect函数
+
   - 引入：
     ```js
     import {connect} from 'react-redux'
     ```
+    
   - 写法：
     ```js
     connect(mapStateToProps, mapDispatchToProps)(UI组件)
     ```
     - mapStateToProps 映射状态，返回值需要是一个对象
     - mapDispatchToProps 映射操作状态的方法，返回值需是一个对象
+
 （3）备注：容器组件中的store是在App.jsx中靠props传进去的，不是在容器组件中直接引入
   ```js
   import store from './redux/store'
