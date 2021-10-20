@@ -8,7 +8,7 @@
 
 #### 2.工作流程
 
-​	![](C:\Users\victo\Desktop\source\React\4-学习Redux\原理图\redux原理图.png)
+​	![](\原理图\redux原理图.png)
 
 
 ### 四、异步action
