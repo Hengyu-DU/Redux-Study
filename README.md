@@ -11,12 +11,23 @@
 ​	![](./原理图/redux原理图.png)
 
 
-* 需要的文件：
-  components
-  redux
-    |- action.js
-    |- reducer.js
-    |- store.js
+* 需要创建的文件：
+```
+    components
+    redux
+      |- action.js
+      |- reducer.js
+      |- store.js
+```
+
+###  二、 求和案例 redux迷你版
+###  三、 求和案例 redux完整版
+
+总体需要安装的包：
+1. redux
+2. redux-thunk
+3. react-redux
+4. redux-devtools-extension
 
 * 注意：index.js中要使用store.subscribe来检测redux中状态的改变
 ```js
@@ -25,8 +36,7 @@ store.subscribe(()=>{
   <App/>,document.getElementById('root'))
 })
 ```
-###  二、 求和案例 redux迷你版
-###  三、 求和案例 redux完整版
+
 ###  四、异步action
 引入 applyMiddleware
 引入 thunk
