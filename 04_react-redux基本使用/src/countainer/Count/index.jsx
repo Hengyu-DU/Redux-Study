@@ -15,13 +15,13 @@ import { creatIncrementAction,
  * 【b函数主要用于给UI组件传递操作状态的方法】
  */
 function mapStateToProps(state){
-  return {
+  return { //a
     sum:state
   }
 }
 
 function mapDispatchToProps(dispatch){
-  return {
+  return { // b
     add: value => dispatch(creatIncrementAction(value)),
     subtract: value => dispatch(creatDecrementAction(value)),
     addasync: (value,time) => dispatch(creatIncrementAsyncAction(value,time))

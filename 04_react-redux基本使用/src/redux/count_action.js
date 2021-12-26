@@ -1,4 +1,6 @@
 import { DECREMENT, INCREMENT } from "./constant"
+// import store from "./store"
+
 
 // 该文件是用于定义创建action的函数
 export const creatIncrementAction = value => ({type:INCREMENT,data:value*1})

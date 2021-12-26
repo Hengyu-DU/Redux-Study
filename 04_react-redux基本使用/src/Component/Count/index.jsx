@@ -1,5 +1,8 @@
 import React, { Component } from 'react'
 import store from '../../redux/store'
+import { creatIncrementAction,
+  creatDecrementAction,
+  creatIncrementAsyncAction } from '../../redux/count_action'
 import './index.css'
 
 export default class Count extends Component {
@@ -10,27 +13,27 @@ export default class Count extends Component {
   increment = () => {
     // 获取数字
     const {value} = this.numberNode
-    this.props.add(value)
+    store.dispatch(creatIncrementAction(value))
   }
   decrement = () => {
     const {value} = this.numberNode
-    this.props.subtract(value)
+    store.dispatch(creatDecrementAction(value))
   }
   incrementIfOdd = () => {
     const {value} = this.numberNode
     if(store.getState() % 2 !== 0){
-      this.props.add(value)
+      store.dispatch(creatIncrementAction(value))
     }
   }
   incrementAsync = () => {
     const {value} = this.numberNode
-    this.props.addasync(value,500)
+      store.dispatch(creatIncrementAsyncAction(value,500))
   }
 
   render() {
     return (
       <div>
-        <h2>当前求和为：{this.props.sum}</h2>
+        <h2>当前求和为：{store.getState()}</h2>
         <div className="wind">今天{this.state.wind}</div>
         <select ref={c => this.numberNode = c}>
           <option value="1">1</option>
